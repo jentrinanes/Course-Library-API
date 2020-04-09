@@ -1,5 +1,4 @@
-﻿using CourseLibrary.API.Entities;
-using System;
+﻿using System;
 
 namespace CourseLibrary.API.Models
 {
