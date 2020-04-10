@@ -14,8 +14,7 @@ using System.Collections.Generic;
 namespace CourseLibrary.API.Controllers
 {
     [ApiController]
-    [Route("api/authors/{authorId}/courses")]
-    [ResponseCache(CacheProfileName = "240SecondsCacheProfile")]
+    [Route("api/authors/{authorId}/courses")]    
     public class CoursesController : ControllerBase
     {
         private readonly ICourseLibraryRepository _repo;
@@ -37,8 +36,7 @@ namespace CourseLibrary.API.Controllers
             return Ok(_mapper.Map<IEnumerable<CourseDto>>(courses));
         }
 
-        [HttpGet("{courseId}", Name = "GetCourseForAuthor")]
-        [ResponseCache(Duration = 120)]
+        [HttpGet("{courseId}", Name = "GetCourseForAuthor")]        
         public IActionResult GetCourseForAuthor(Guid authorId, Guid courseId)
         {
             if (!_repo.AuthorExists(authorId))
