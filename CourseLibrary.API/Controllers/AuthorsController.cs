@@ -29,6 +29,16 @@ namespace CourseLibrary.API.Controllers
             _propertyCheckerService = propertyCheckerService ?? throw new ArgumentNullException(nameof(propertyCheckerService));
         }
 
+        /// <summary>
+        /// Get authors
+        /// </summary>
+        /// <param name="mainCategory">Filter by main category</param>
+        /// <param name="searchQuery">Filter by search query</param>
+        /// <param name="fields">Filter columns</param>
+        /// <param name="pageNumber">Page number</param>
+        /// <param name="pageSize">Page size</param>
+        /// <param name="orderBy">Order by any field</param>
+        /// <returns></returns>
         [HttpGet(Name = "GetAuthors")]
         [HttpHead]
         public IActionResult GetAuthors(string mainCategory, string searchQuery, string fields, int pageNumber = 1, int pageSize = 10, string orderBy = "Name")
@@ -73,6 +83,13 @@ namespace CourseLibrary.API.Controllers
             return Ok(linkedCollectionResource);
         }
 
+        /// <summary>
+        /// Get an author by authorId
+        /// </summary>
+        /// <param name="authorId">The ID of the author</param>
+        /// <param name="fields">The columns that can be returned</param>
+        /// <param name="mediaType">The media type</param>
+        /// <returns></returns>
         [Produces("application/json",
             "application/vnd.marvin.hateoas+json",
             "application/vnd.marvin.author.full+json",
@@ -121,28 +138,12 @@ namespace CourseLibrary.API.Controllers
             
             return Ok(friendlyResourceToReturn);
         }
-
-        [HttpPost(Name = "CreateAuthorWithDateOfDeath")]
-        [RequestHeaderMatchesMediaType("Content-Type",
-            "application/vnd.marvin.authorforcreationwithdateofdeath+json")]
-        [Consumes("application/vnd.marvin.authorforcreationwithdateofdeath+json")]
-        public IActionResult CreateAuthorWithDateOfDeath(AuthorForCreationWithDateOfDeathDto authorForCreationWithDateOfDeathDto)
-        {
-            var author = _mapper.Map<Author>(authorForCreationWithDateOfDeathDto);
-            _repo.AddAuthor(author);
-            _repo.Save();
-
-            var result = _mapper.Map<AuthorDto>(author);
-
-            var links = CreateLinksForAuthor(result.Id, null);
-
-            var linkedResourceToReturn = result.ShapeData(null) as IDictionary<string, object>;
-
-            linkedResourceToReturn.Add("links", links);
-
-            return CreatedAtRoute("GetAuthor", new { authorId = linkedResourceToReturn["Id"] }, linkedResourceToReturn);
-        }
-
+        
+        /// <summary>
+        /// Create an author
+        /// </summary>
+        /// <param name="authorForCreationDto">The payload for creating an author</param>
+        /// <returns></returns>
         [HttpPost(Name = "CreateAuthor")]
         [RequestHeaderMatchesMediaType("Content-Type",
             "application/json",
@@ -171,6 +172,11 @@ namespace CourseLibrary.API.Controllers
             return Ok();
         }
 
+        /// <summary>
+        /// Delete an author
+        /// </summary>
+        /// <param name="authorId">The author Id</param>
+        /// <returns></returns>
         [HttpDelete("{authorId}", Name = "DeleteAuthor")]
         public IActionResult DeleteAuthor(Guid authorId)
         {

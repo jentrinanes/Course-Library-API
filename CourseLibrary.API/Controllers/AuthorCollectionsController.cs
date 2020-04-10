@@ -22,6 +22,11 @@ namespace CourseLibrary.API.Controllers
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
+        /// <summary>
+        /// Gets the authors by a collection of author Ids
+        /// </summary>
+        /// <param name="ids">A collection of author Ids</param>
+        /// <returns></returns>
         [HttpGet("({ids})", Name = "GetAuthorCollection")]
         public IActionResult GetAuthorCollection([FromRoute] [ModelBinder(BinderType = typeof(ArrayModelBinder))] IEnumerable<Guid> ids)
         {
@@ -37,6 +42,11 @@ namespace CourseLibrary.API.Controllers
             return Ok(result);
         }
 
+        /// <summary>
+        /// Create a collection of authors
+        /// </summary>
+        /// <param name="authorForCreationDtos">A collection of authors</param>
+        /// <returns></returns>
         [HttpPost]
         public IActionResult CreateAuthorCollection(IEnumerable<AuthorForCreationDto> authorForCreationDtos)
         {

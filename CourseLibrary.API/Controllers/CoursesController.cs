@@ -26,6 +26,11 @@ namespace CourseLibrary.API.Controllers
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
+        /// <summary>
+        /// Get all courses by author Id
+        /// </summary>
+        /// <param name="authorId">The author Id</param>
+        /// <returns></returns>
         [HttpGet(Name = "GetCoursesForAuthor")]
         public IActionResult GetCoursesForAuthor(Guid authorId)
         {
@@ -36,6 +41,12 @@ namespace CourseLibrary.API.Controllers
             return Ok(_mapper.Map<IEnumerable<CourseDto>>(courses));
         }
 
+        /// <summary>
+        /// Get a course by author Id
+        /// </summary>
+        /// <param name="authorId">The author Id</param>
+        /// <param name="courseId">The course Id</param>
+        /// <returns></returns>
         [HttpGet("{courseId}", Name = "GetCourseForAuthor")]        
         public IActionResult GetCourseForAuthor(Guid authorId, Guid courseId)
         {
@@ -50,6 +61,12 @@ namespace CourseLibrary.API.Controllers
             return Ok(_mapper.Map<CourseDto>(course));
         }
 
+        /// <summary>
+        /// Create a course for an author
+        /// </summary>
+        /// <param name="authorId">The author Id</param>
+        /// <param name="courseForCreationDto">The payload for creating a course</param>
+        /// <returns></returns>
         [HttpPost(Name = "CreateCourseForAuthor")]
         public IActionResult CreateCourseForAuthor(Guid authorId, CourseForCreationDto courseForCreationDto)
         {
@@ -65,6 +82,13 @@ namespace CourseLibrary.API.Controllers
             return CreatedAtRoute("GetCourseForAuthor", new { authorId, courseId = result.Id }, result);
         }
 
+        /// <summary>
+        /// Update a course for an author
+        /// </summary>
+        /// <param name="authorId">The author Id</param>
+        /// <param name="courseId">The course Id</param>
+        /// <param name="courseForUpdateDto">The payload for updating a course</param>
+        /// <returns></returns>
         [HttpPut("{courseId}")]
         public IActionResult UpdateCourseForAuthor(Guid authorId, Guid courseId, CourseForUpdateDto courseForUpdateDto)
         {
@@ -92,6 +116,13 @@ namespace CourseLibrary.API.Controllers
             return NoContent();
         }
 
+        /// <summary>
+        /// Partially update a course for an author
+        /// </summary>
+        /// <param name="authorId">The author Id</param>
+        /// <param name="courseId">The course Id</param>
+        /// <param name="patchDocument">The payload for partially updating a course</param>
+        /// <returns></returns>
         [HttpPatch("{courseId}")]
         public IActionResult PartiallyUpdateCourseForAuthor(Guid authorId, Guid courseId, JsonPatchDocument<CourseForUpdateDto> patchDocument)
         {
@@ -131,6 +162,12 @@ namespace CourseLibrary.API.Controllers
             return NoContent();
         }
 
+        /// <summary>
+        /// Delete a course for an author
+        /// </summary>
+        /// <param name="authorId">The author Id</param>
+        /// <param name="courseId">The course Id</param>
+        /// <returns></returns>
         [HttpDelete("{courseId}")]
         public IActionResult DeleteCourseForAuthor(Guid authorId, Guid courseId)
         {

@@ -1,0 +1,106 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>CourseLibrary.API</name>
+    </assembly>
+    <members>
+        <member name="M:CourseLibrary.API.Controllers.AuthorCollectionsController.GetAuthorCollection(System.Collections.Generic.IEnumerable{System.Guid})">
+            <summary>
+            Gets the authors by a collection of author Ids
+            </summary>
+            <param name="ids">A collection of author Ids</param>
+            <returns></returns>
+        </member>
+        <member name="M:CourseLibrary.API.Controllers.AuthorCollectionsController.CreateAuthorCollection(System.Collections.Generic.IEnumerable{CourseLibrary.API.Models.AuthorForCreationDto})">
+            <summary>
+            Create a collection of authors
+            </summary>
+            <param name="authorForCreationDtos">A collection of authors</param>
+            <returns></returns>
+        </member>
+        <member name="M:CourseLibrary.API.Controllers.AuthorsController.GetAuthors(System.String,System.String,System.String,System.Int32,System.Int32,System.String)">
+            <summary>
+            Get authors
+            </summary>
+            <param name="mainCategory">Filter by main category</param>
+            <param name="searchQuery">Filter by search query</param>
+            <param name="fields">Filter columns</param>
+            <param name="pageNumber">Page number</param>
+            <param name="pageSize">Page size</param>
+            <param name="orderBy">Order by any field</param>
+            <returns></returns>
+        </member>
+        <member name="M:CourseLibrary.API.Controllers.AuthorsController.GetAuthor(System.Guid,System.String,System.String)">
+            <summary>
+            Get an author by authorId
+            </summary>
+            <param name="authorId">The ID of the author</param>
+            <param name="fields">The columns that can be returned</param>
+            <param name="mediaType">The media type</param>
+            <returns></returns>
+        </member>
+        <member name="M:CourseLibrary.API.Controllers.AuthorsController.CreateAuthor(CourseLibrary.API.Models.AuthorForCreationDto)">
+            <summary>
+            Create an author
+            </summary>
+            <param name="authorForCreationDto">The payload for creating an author</param>
+            <returns></returns>
+        </member>
+        <member name="M:CourseLibrary.API.Controllers.AuthorsController.DeleteAuthor(System.Guid)">
+            <summary>
+            Delete an author
+            </summary>
+            <param name="authorId">The author Id</param>
+            <returns></returns>
+        </member>
+        <member name="M:CourseLibrary.API.Controllers.CoursesController.GetCoursesForAuthor(System.Guid)">
+            <summary>
+            Get all courses by author Id
+            </summary>
+            <param name="authorId">The author Id</param>
+            <returns></returns>
+        </member>
+        <member name="M:CourseLibrary.API.Controllers.CoursesController.GetCourseForAuthor(System.Guid,System.Guid)">
+            <summary>
+            Get a course by author Id
+            </summary>
+            <param name="authorId">The author Id</param>
+            <param name="courseId">The course Id</param>
+            <returns></returns>
+        </member>
+        <member name="M:CourseLibrary.API.Controllers.CoursesController.CreateCourseForAuthor(System.Guid,CourseLibrary.API.Models.CourseForCreationDto)">
+            <summary>
+            Create a course for an author
+            </summary>
+            <param name="authorId">The author Id</param>
+            <param name="courseForCreationDto">The payload for creating a course</param>
+            <returns></returns>
+        </member>
+        <member name="M:CourseLibrary.API.Controllers.CoursesController.UpdateCourseForAuthor(System.Guid,System.Guid,CourseLibrary.API.Models.CourseForUpdateDto)">
+            <summary>
+            Update a course for an author
+            </summary>
+            <param name="authorId">The author Id</param>
+            <param name="courseId">The course Id</param>
+            <param name="courseForUpdateDto">The payload for updating a course</param>
+            <returns></returns>
+        </member>
+        <member name="M:CourseLibrary.API.Controllers.CoursesController.PartiallyUpdateCourseForAuthor(System.Guid,System.Guid,Microsoft.AspNetCore.JsonPatch.JsonPatchDocument{CourseLibrary.API.Models.CourseForUpdateDto})">
+            <summary>
+            Partially update a course for an author
+            </summary>
+            <param name="authorId">The author Id</param>
+            <param name="courseId">The course Id</param>
+            <param name="patchDocument">The payload for partially updating a course</param>
+            <returns></returns>
+        </member>
+        <member name="M:CourseLibrary.API.Controllers.CoursesController.DeleteCourseForAuthor(System.Guid,System.Guid)">
+            <summary>
+            Delete a course for an author
+            </summary>
+            <param name="authorId">The author Id</param>
+            <param name="courseId">The course Id</param>
+            <returns></returns>
+        </member>
+    </members>
+</doc>

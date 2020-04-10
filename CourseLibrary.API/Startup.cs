@@ -13,7 +13,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Newtonsoft.Json.Serialization;
 using System;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 
 namespace CourseLibrary.API
 {
@@ -116,6 +118,27 @@ namespace CourseLibrary.API
                 options.UseSqlServer(
                     @"Server=(localdb)\mssqllocaldb;Database=CourseLibraryDB;Trusted_Connection=True;");
             });
+
+            services.AddSwaggerGen(setupAction => {
+                setupAction.SwaggerDoc(
+                    "CourseLibraryOpenAPISpecification",
+                    new Microsoft.OpenApi.Models.OpenApiInfo()
+                    {
+                        Title = "Course Library API",
+                        Version = "1",
+                        Description = "Through this API you can access authors and their courses.",
+                        Contact = new Microsoft.OpenApi.Models.OpenApiContact()
+                        {
+                            Email = "jentrinanes@hotmail.com",
+                            Name = "Jen Triñanes",
+                            Url = new Uri("https://www.twitter.com/jentrinanes")
+                        }
+                    });
+
+                var xmlCommentsFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                var xmlCommentsFullPath = Path.Combine(AppContext.BaseDirectory, xmlCommentsFile);
+                setupAction.IncludeXmlComments(xmlCommentsFullPath);
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -149,6 +172,13 @@ namespace CourseLibrary.API
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+            });
+
+            app.UseSwagger();
+
+            app.UseSwaggerUI(setupAction => {
+                setupAction.SwaggerEndpoint("/swagger/CourseLibraryOpenAPISpecification/swagger.json", "Course Library API");
+                setupAction.RoutePrefix = "";
             });
         }
     }
