@@ -10,6 +10,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace CourseLibrary.API.Controllers
 {
@@ -32,12 +33,12 @@ namespace CourseLibrary.API.Controllers
         /// <param name="authorId">The author Id</param>
         /// <returns></returns>
         [HttpGet(Name = "GetCoursesForAuthor")]
-        public IActionResult GetCoursesForAuthor(Guid authorId)
+        public async Task<IActionResult> GetCoursesForAuthor(Guid authorId)
         {
             if (!_repo.AuthorExists(authorId))
                 return NotFound();
 
-            var courses = _repo.GetCourses(authorId);
+            var courses = await _repo.GetCoursesAsync(authorId);
             return Ok(_mapper.Map<IEnumerable<CourseDto>>(courses));
         }
 
@@ -48,12 +49,12 @@ namespace CourseLibrary.API.Controllers
         /// <param name="courseId">The course Id</param>
         /// <returns></returns>
         [HttpGet("{courseId}", Name = "GetCourseForAuthor")]        
-        public IActionResult GetCourseForAuthor(Guid authorId, Guid courseId)
+        public async Task<IActionResult> GetCourseForAuthor(Guid authorId, Guid courseId)
         {
             if (!_repo.AuthorExists(authorId))
                 return NotFound();
 
-            var course = _repo.GetCourse(authorId, courseId);
+            var course = await _repo.GetCourseAsync(authorId, courseId);
 
             if (course == null)
                 return NotFound();
@@ -68,7 +69,7 @@ namespace CourseLibrary.API.Controllers
         /// <param name="courseForCreationDto">The payload for creating a course</param>
         /// <returns></returns>
         [HttpPost(Name = "CreateCourseForAuthor")]
-        public IActionResult CreateCourseForAuthor(Guid authorId, CourseForCreationDto courseForCreationDto)
+        public async Task<IActionResult> CreateCourseForAuthor(Guid authorId, CourseForCreationDto courseForCreationDto)
         {
             if (!_repo.AuthorExists(authorId))
                 return NotFound();
@@ -76,7 +77,7 @@ namespace CourseLibrary.API.Controllers
             var course = _mapper.Map<Course>(courseForCreationDto);
             
             _repo.AddCourse(authorId, course);
-            _repo.Save();
+            await _repo.SaveChangesAsync();
 
             var result = _mapper.Map<CourseDto>(course);
             return CreatedAtRoute("GetCourseForAuthor", new { authorId, courseId = result.Id }, result);
@@ -90,12 +91,12 @@ namespace CourseLibrary.API.Controllers
         /// <param name="courseForUpdateDto">The payload for updating a course</param>
         /// <returns></returns>
         [HttpPut("{courseId}")]
-        public IActionResult UpdateCourseForAuthor(Guid authorId, Guid courseId, CourseForUpdateDto courseForUpdateDto)
+        public async Task<IActionResult> UpdateCourseForAuthor(Guid authorId, Guid courseId, CourseForUpdateDto courseForUpdateDto)
         {
             if (!_repo.AuthorExists(authorId))
                 return NotFound();
 
-            var course = _repo.GetCourse(authorId, courseId);
+            var course = await _repo.GetCourseAsync(authorId, courseId);
 
             if (course == null)
             {
@@ -103,7 +104,7 @@ namespace CourseLibrary.API.Controllers
                 courseToAdd.Id = courseId;
 
                 _repo.AddCourse(authorId, courseToAdd);
-                _repo.Save();
+                await _repo.SaveChangesAsync();
 
                 var result = _mapper.Map<CourseDto>(courseToAdd);
                 return CreatedAtRoute("GetCourseForAuthor", new { authorId, courseId = result.Id }, result);
@@ -111,7 +112,7 @@ namespace CourseLibrary.API.Controllers
 
             _mapper.Map(courseForUpdateDto, course);
             _repo.UpdateCourse(course);
-            _repo.Save();
+            await _repo.SaveChangesAsync();
 
             return NoContent();
         }
@@ -124,12 +125,12 @@ namespace CourseLibrary.API.Controllers
         /// <param name="patchDocument">The payload for partially updating a course</param>
         /// <returns></returns>
         [HttpPatch("{courseId}")]
-        public IActionResult PartiallyUpdateCourseForAuthor(Guid authorId, Guid courseId, JsonPatchDocument<CourseForUpdateDto> patchDocument)
+        public async Task<IActionResult> PartiallyUpdateCourseForAuthor(Guid authorId, Guid courseId, JsonPatchDocument<CourseForUpdateDto> patchDocument)
         {
             if (!_repo.AuthorExists(authorId))
                 return NotFound();
 
-            var course = _repo.GetCourse(authorId, courseId);
+            var course = await _repo.GetCourseAsync(authorId, courseId);
 
             if (course == null)
             {
@@ -143,7 +144,7 @@ namespace CourseLibrary.API.Controllers
                 courseToAdd.Id = courseId;
 
                 _repo.AddCourse(authorId, courseToAdd);
-                _repo.Save();
+                await _repo.SaveChangesAsync();
 
                 var result = _mapper.Map<CourseDto>(courseToAdd);
                 return CreatedAtRoute("GetCourseForAuthor", new { authorId, courseId = result.Id }, result);
@@ -157,7 +158,7 @@ namespace CourseLibrary.API.Controllers
             
             _mapper.Map(courseToPatch, course);
             _repo.UpdateCourse(course);
-            _repo.Save();
+            await _repo.SaveChangesAsync();
 
             return NoContent();
         }
@@ -169,18 +170,18 @@ namespace CourseLibrary.API.Controllers
         /// <param name="courseId">The course Id</param>
         /// <returns></returns>
         [HttpDelete("{courseId}")]
-        public IActionResult DeleteCourseForAuthor(Guid authorId, Guid courseId)
+        public async Task<IActionResult> DeleteCourseForAuthor(Guid authorId, Guid courseId)
         {
             if (!_repo.AuthorExists(authorId))
                 return NotFound();
 
-            var course = _repo.GetCourse(authorId, courseId);
+            var course = await _repo.GetCourseAsync(authorId, courseId);
 
             if (course == null)
                 return NotFound();
 
             _repo.DeleteCourse(course);
-            _repo.Save();
+            await _repo.SaveChangesAsync();
 
             return NoContent();
         }

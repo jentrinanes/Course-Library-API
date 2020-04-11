@@ -9,6 +9,7 @@ using Microsoft.Net.Http.Headers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace CourseLibrary.API.Controllers
 {
@@ -48,22 +49,22 @@ namespace CourseLibrary.API.Controllers
 
             if (!_propertyCheckerService.TypeHasProperties<AuthorDto>(fields))
                 return BadRequest();
-            
+
             var authors = _repo.GetAuthors(mainCategory, searchQuery, pageNumber, pageSize, orderBy);
-            
+
             var paginationMetadata = new
             {
                 totalCount = authors.TotalCount,
                 pageSize = authors.PageSize,
                 currentPage = authors.CurrentPage,
-                totalPages = authors.TotalPages                
+                totalPages = authors.TotalPages
             };
 
             Response.Headers.Add("X-Pagination", System.Text.Json.JsonSerializer.Serialize(paginationMetadata));
 
-            var links = CreateLinksForAuthors(mainCategory, searchQuery, fields, pageNumber, pageSize, orderBy, 
+            var links = CreateLinksForAuthors(mainCategory, searchQuery, fields, pageNumber, pageSize, orderBy,
                 authors.HasNext, authors.HasPrevious);
-            
+
             var shapedAuthors = _mapper.Map<IEnumerable<AuthorDto>>(authors).ShapeData(fields);
 
             var shapedAuthorsWithLinks = shapedAuthors.Select(author =>
@@ -97,7 +98,7 @@ namespace CourseLibrary.API.Controllers
             "application/vnd.marvin.author.friendly+json",
             "application/vnd.marvin.author.friendly.hateoas+json")]
         [HttpGet("{authorId}", Name = "GetAuthor")]       
-        public IActionResult GetAuthor(Guid authorId, string fields, [FromHeader(Name = "Accept")] string mediaType)
+        public async Task<IActionResult> GetAuthor(Guid authorId, string fields, [FromHeader(Name = "Accept")] string mediaType)
         {
             if (!MediaTypeHeaderValue.TryParse(mediaType, out MediaTypeHeaderValue parsedMediaType))
                 return BadRequest();
@@ -105,7 +106,7 @@ namespace CourseLibrary.API.Controllers
             if (!_propertyCheckerService.TypeHasProperties<AuthorDto>(fields))
                 return BadRequest();
 
-            var author = _repo.GetAuthor(authorId);
+            var author = await _repo.GetAuthorAsync(authorId);
             if (author == null)
                 return NotFound();
 
@@ -150,11 +151,11 @@ namespace CourseLibrary.API.Controllers
             "application/vnd.marvin.authorforcreation+json")]
         [Consumes("application/json",
             "application/vnd.marvin.authorforcreation+json")]
-        public IActionResult CreateAuthor(AuthorForCreationDto authorForCreationDto)
+        public async Task<IActionResult> CreateAuthor(AuthorForCreationDto authorForCreationDto)
         {            
             var author = _mapper.Map<Entities.Author>(authorForCreationDto);
             _repo.AddAuthor(author);
-            _repo.Save();
+            await _repo.SaveChangesAsync();
 
             var response = _mapper.Map<AuthorDto>(author);
 
@@ -178,15 +179,15 @@ namespace CourseLibrary.API.Controllers
         /// <param name="authorId">The author Id</param>
         /// <returns></returns>
         [HttpDelete("{authorId}", Name = "DeleteAuthor")]
-        public IActionResult DeleteAuthor(Guid authorId)
+        public async Task<IActionResult> DeleteAuthor(Guid authorId)
         {
-            var author = _repo.GetAuthor(authorId);
+            var author = await _repo.GetAuthorAsync(authorId);
 
             if (author == null)
                 return NotFound();
 
             _repo.DeleteAuthor(author);
-            _repo.Save();
+            await _repo.SaveChangesAsync();
 
             return NoContent();
 ;        }

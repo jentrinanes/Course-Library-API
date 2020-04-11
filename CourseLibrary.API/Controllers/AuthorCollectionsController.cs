@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace CourseLibrary.API.Controllers
 {
@@ -28,12 +29,12 @@ namespace CourseLibrary.API.Controllers
         /// <param name="ids">A collection of author Ids</param>
         /// <returns></returns>
         [HttpGet("({ids})", Name = "GetAuthorCollection")]
-        public IActionResult GetAuthorCollection([FromRoute] [ModelBinder(BinderType = typeof(ArrayModelBinder))] IEnumerable<Guid> ids)
+        public async Task<IActionResult> GetAuthorCollection([FromRoute] [ModelBinder(BinderType = typeof(ArrayModelBinder))] IEnumerable<Guid> ids)
         {
             if (ids == null)
                 return BadRequest();
 
-            var authors = _repo.GetAuthors(ids);
+            var authors = await _repo.GetAuthorsAsync(ids);
 
             if (ids.Count() != authors.Count())
                 return NotFound();
@@ -48,14 +49,14 @@ namespace CourseLibrary.API.Controllers
         /// <param name="authorForCreationDtos">A collection of authors</param>
         /// <returns></returns>
         [HttpPost]
-        public IActionResult CreateAuthorCollection(IEnumerable<AuthorForCreationDto> authorForCreationDtos)
+        public async Task<IActionResult> CreateAuthorCollection(IEnumerable<AuthorForCreationDto> authorForCreationDtos)
         {
             var authors = _mapper.Map<IEnumerable<Entities.Author>>(authorForCreationDtos);
             foreach(var author in authors) {
                 _repo.AddAuthor(author);
             }
 
-            _repo.Save();
+            await _repo.SaveChangesAsync();
             
             var result = _mapper.Map<IEnumerable<AuthorDto>>(authors);
             var idsAsString = string.Join(",", result.Select(a => a.Id));
