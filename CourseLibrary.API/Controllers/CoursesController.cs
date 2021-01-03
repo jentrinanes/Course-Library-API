@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace CourseLibrary.API.Controllers
 {
-    // auto merge test
+    // auto merge test # 3
     
     [ApiController]
     [Route("api/authors/{authorId}/courses")]    
